@@ -37,4 +37,9 @@ describe("Description Component", () => {
     cy.get('[role="textbox"]').type("This text contains forbidden words");
     cy.get(".forbidden-word").should("exist");
   });
+
+  it("should highligh forbidden word", () => {
+    mount(<Description defaultValue="test default value" />);
+    cy.contains(/test default value/).should("be.visible");
+  });
 });

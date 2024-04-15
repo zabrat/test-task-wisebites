@@ -1,5 +1,10 @@
 import { FC, useEffect, useState } from "react";
-import { Editor, EditorState, CompositeDecorator } from "draft-js";
+import {
+  Editor,
+  EditorState,
+  CompositeDecorator,
+  ContentState,
+} from "draft-js";
 
 import { forbiddenWordsDecorator } from "../../lib/forbiddenWordsDecorator";
 import "draft-js/dist/Draft.css";
@@ -12,9 +17,11 @@ interface Props {
   onChange?: (value: string) => void;
   isError?: boolean;
   helpText?: string;
+  defaultValue?: string;
 }
 
 export const Description: FC<Props> = ({
+  defaultValue,
   maxLimit = 1000,
   label,
   forbiddenWords,
@@ -22,8 +29,14 @@ export const Description: FC<Props> = ({
   isError,
   helpText,
 }) => {
-  const [editorState, setEditorState] = useState(EditorState.createEmpty());
-  const [textLength, setTextLength] = useState(0);
+  const defaultContent = ContentState.createFromText(defaultValue || "");
+
+  const [editorState, setEditorState] = useState(
+    EditorState.createWithContent(defaultContent)
+  );
+  const [textLength, setTextLength] = useState(
+    defaultContent.getPlainText("").length
+  );
   const [isLimitError, setIsLimitError] = useState(false);
 
   const onEditorChange = (newState: EditorState) => {
